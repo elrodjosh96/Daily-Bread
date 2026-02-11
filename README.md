@@ -1,14 +1,20 @@
 # Daily Bread
 
-Daily Bread is a frontend-only ESV reading dashboard powered by the Crossway ESV API. It fetches passages for the current day based on a start date and stores your progress in localStorage.
+Daily Bread is a frontend-only ESV reading dashboard built with React and Vite. It fetches passages from the Crossway ESV API, calculates the current reading day based on a start date, and stores progress locally.
+
+## Features
+
+- Date-based reading day calculation
+- Local persistence for start date and completed days
+- ESV passage rendering via the Crossway API
 
 ## Setup
 
-1. Register for a Crossway developer account and generate an ESV API key.
-2. Create a local .env file (see .env.example) and add your key:
+1. Create a Crossway developer account and generate an API key.
+2. Create a local .env file (see .env.example) and add:
 
-	- VITE_ESV_API_KEY=your_key_here
-	- VITE_BASE_PATH=/
+	VITE_ESV_API_KEY=your_api_key_here
+	VITE_BASE_PATH=/
 
 3. Install dependencies:
 
@@ -35,3 +41,7 @@ When deploying to GitHub Pages, set VITE_BASE_PATH to your repository name with 
 ## Reading plan data
 
 Update the reading plan data in src/data/readingPlan.js to match your desired daily references.
+
+## ESV copyright notice
+
+Scripture quotations are from The Holy Bible, English Standard Version® (ESV®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.
