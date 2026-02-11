@@ -40,7 +40,7 @@ When deploying to GitHub Pages, set VITE_BASE_PATH to your repository name with 
 
 ## Reading plan data
 
-Update the reading plan data in src/data/readingPlan.js to match your desired daily references.
+Update the reading plan data in src/data/readingPlan.js to match your desired daily references. The 30-day Old and New Testament plans are filled out; the 90-day and 1-year plans are placeholders and should be populated before use.
 
 ## ESV copyright notice
 
