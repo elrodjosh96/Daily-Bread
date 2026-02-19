@@ -56,6 +56,14 @@ function App() {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [chapterIndex, setChapterIndex] = useState(0)
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true'
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
+    localStorage.setItem('darkMode', darkMode)
+  }, [darkMode])
 
   const selectedPlan = useMemo(() => getPlanById(planId), [planId])
   const planLength = selectedPlan?.totalDays || selectedPlan?.readings?.length || 0
@@ -185,9 +193,19 @@ function App() {
         <div>
           <p className="eyebrow">Daily Bread</p>
           <h1>Reading Dashboard</h1>
-          <p className="muted">
-            Choose a plan and start date to generate today&apos;s reading.
-          </p>
+          <p className="muted">Choose a plan and start reading!</p>
+          <div className="theme-toggle-row">
+            <button
+              className={`theme-toggle ${darkMode ? 'theme-toggle--on' : ''}`}
+              onClick={() => setDarkMode((d) => !d)}
+              aria-label="Toggle dark mode"
+            >
+              <span className="theme-toggle__label">
+                {darkMode ? 'Dark' : 'Light'}
+              </span>
+              <span className="theme-toggle__thumb" />
+            </button>
+          </div>
         </div>
         <div className="controls">
           <label className="field">
@@ -217,7 +235,7 @@ function App() {
               <span className="muted">{selectedPlan?.description}</span>
             </div>
             <button type="button" onClick={toggleComplete}>
-              {isCompleted ? 'Completed' : 'Mark complete'}
+              {isCompleted ? 'Completed ✓' : 'Mark complete'}
             </button>
           </div>
         </div>

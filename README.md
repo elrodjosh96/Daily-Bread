@@ -6,7 +6,7 @@ Daily Bread is a frontend-only Bible reading app built with **React + Vite**, po
 
 ## User Story
 
-A user opens Daily Bread, selects a reading plan, and sets a start date. From that point on, the app automatically calculates the current day in the plan, fetches the correct Scripture passages from the ESV API, and displays them chapter by chapter. Progress is saved locally so the user never loses their place.
+A user opens Daily Bread, selects a reading plan, and sets a start date. From that point on, the app automatically calculates the current day in the plan, fetches the correct Scripture passages from the ESV API, and displays them chapter by chapter. Progress is saved locally so the user never loses their place. If they prefer reading at night, they can switch to dark mode with a single toggle — and the app will remember their preference the next time they visit.
 
 ---
 
@@ -17,7 +17,8 @@ A user opens Daily Bread, selects a reading plan, and sets a start date. From th
 - **Single API call per session** — all chapters for the day are fetched in one request and paginated client-side
 - **Chapter pagination** — Previous/Next controls let users move through chapters without scrolling
 - **Red-letter text** — words of Christ rendered in red via ESV HTML endpoint and the `.woc` CSS class
-- **localStorage persistence** — start date, selected plan, and completed days are saved in the browser
+- **Dark mode** — pill-style toggle switches between light and dark themes, preference saved in localStorage
+- **localStorage persistence** — start date, selected plan, completed days, and theme preference are all saved in the browser
 - **GitHub Pages deployment** — statically hosted with Vite's base path config
 
 ---

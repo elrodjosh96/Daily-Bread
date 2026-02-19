@@ -116,6 +116,10 @@ input {
   background: var(--surface-2);
 }
 
+.field {
+  color: var(--text);
+}
+
 .status {
   display: flex;
   justify-content: space-between;
@@ -254,4 +258,118 @@ button:hover {
 .card,
 .panel {
   background: #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg: #1a1f1c;
+  --bg-2: #1e2430;
+  --bg-3: #221e2e;
+  --bg-4: #2a1e24;
+  --bg-5: #2a2318;
+  --surface: #242b27;
+  --surface-2: #1e2620;
+  --text: #e8f5ef;
+  --muted: #8fa898;
+  --border: #2f3d36;
+  --shadow: 0 14px 28px rgba(0, 0, 0, 0.4);
+
+  --primary: #6fd3b2;
+  --primary-2: #9ee9d2;
+  --accent: #8ec5ff;
+  --accent-2: #c4a8ff;
+  --accent-3: #ffc9a8;
+  --accent-4: #ff9fc9;
+}
+
+[data-theme="dark"] .app-header,
+[data-theme="dark"] .passage-card,
+[data-theme="dark"] .chapter-list {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .field input,
+[data-theme="dark"] .field select {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .field {
+  color: var(--text);
+}
+
+[data-theme="dark"] body {
+  background:
+    radial-gradient(900px 500px at 10% -10%, #1e3028 0%, transparent 60%),
+    radial-gradient(800px 500px at 90% 0%, #1e2435 0%, transparent 55%),
+    radial-gradient(700px 500px at 50% 100%, #2a1e28 0%, transparent 50%),
+    var(--bg);
+}
+
+.theme-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 90px;
+  height: 32px;
+  border-radius: 999px;
+  background: #d1d5db;
+  border: none;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.3s ease;
+  overflow: hidden;
+}
+
+.theme-toggle--on {
+  background: #6fd3b2;
+}
+
+.theme-toggle:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.theme-toggle__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  position: absolute;
+  right: 10px;
+  left: auto;
+  transition: opacity 0.2s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+.theme-toggle--on .theme-toggle__label {
+  left: 10px;
+  right: auto;
+}
+
+.theme-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle--on .theme-toggle__thumb {
+  transform: translateX(58px);
+}
+
+.theme-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
 }
