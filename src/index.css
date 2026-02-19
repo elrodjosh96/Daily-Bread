@@ -2,8 +2,32 @@
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #1b1d23;
-  background-color: #f7f6f2;
+
+  
+  --bg: #f6fffb;
+  --bg-2: #e6f6ff;  /* brighter sky */
+  --bg-3: #f0e9ff;  /* brighter lavender */
+  --bg-4: #ffe3f1;  /* brighter blush */
+  --bg-5: #ffeecf;  /* brighter peach */
+
+  --surface: #ffffff;
+  --surface-2: #f3fbf7;
+
+  --text: #1f2a26;
+  --muted: #6d7a74;
+  --border: #d9eee3;
+  --shadow: 0 14px 28px rgba(31, 42, 38, 0.08);
+
+  --primary: #6fd3b2;
+  --primary-2: #9ee9d2;
+  --accent: #8ec5ff;
+  --accent-2: #c4a8ff;
+  --accent-3: #ffc9a8;
+  --accent-4: #ff9fc9;
+  --accent-5: #9fd6ff;
+
+  color: var(--text);
+  background-color: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,7 +42,13 @@
 
 body {
   min-height: 100vh;
-  background: #f7f6f2;
+  background:
+    radial-gradient(1200px 700px at 10% -10%, #e6f6ef 0%, transparent 60%),
+    radial-gradient(1000px 600px at 90% 0%, #e9effc 0%, transparent 55%),
+    radial-gradient(900px 600px at 50% 100%, #f7e9f2 0%, transparent 55%),
+    radial-gradient(900px 600px at 0% 100%, #fff2e6 0%, transparent 60%),
+    radial-gradient(900px 600px at 100% 100%, #eef7ff 0%, transparent 60%),
+    linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 50%, var(--bg-4) 100%);
 }
 
 img {
@@ -44,10 +74,11 @@ input {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  background: #ffffff;
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
   padding: 2rem;
   border-radius: 16px;
-  box-shadow: 0 18px 40px rgba(15, 18, 26, 0.08);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .app-header h1 {
@@ -59,7 +90,7 @@ input {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.75rem;
-  color: #7a6f5b;
+  color: var(--muted);
   margin-bottom: 0.5rem;
 }
 
@@ -81,8 +112,8 @@ input {
 .field select {
   padding: 0.55rem 0.75rem;
   border-radius: 10px;
-  border: 1px solid #d8d4c8;
-  background: #fbfbf9;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
 }
 
 .status {
@@ -99,11 +130,11 @@ input {
 }
 
 button {
-  border: none;
+  border: 1px solid #bfe7d9;
   border-radius: 999px;
   padding: 0.6rem 1.4rem;
-  background: #2f5d50;
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: #1b2a24;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -111,7 +142,7 @@ button {
 
 button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(47, 93, 80, 0.2);
+  box-shadow: 0 8px 20px rgba(143, 211, 191, 0.25);
 }
 
 .passages {
@@ -119,11 +150,50 @@ button:hover {
   gap: 1.5rem;
 }
 
+.chapter-view {
+  display: grid;
+  gap: 1rem;
+}
+
+.chapter-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.chapter-controls button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.chapter-list {
+  background: linear-gradient(180deg, var(--surface-2), var(--bg-2));
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--border);
+  color: #3a342a;
+}
+
+.chapter-list ul {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.35rem;
+  padding-left: 1.1rem;
+}
+
+.chapter-list li {
+  line-height: 1.5;
+}
+
 .passage-card {
-  background: #ffffff;
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
   border-radius: 16px;
   padding: 1.75rem;
-  box-shadow: 0 16px 30px rgba(15, 18, 26, 0.08);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .passage-card h2 {
@@ -133,14 +203,26 @@ button:hover {
 }
 
 .passage-text {
-  white-space: pre-wrap;
   font-family: 'Source Serif Pro', 'Georgia', serif;
   font-size: 1.05rem;
   line-height: 1.7;
 }
 
+.passage-text p {
+  margin: 0 0 0.85rem;
+}
+
+.passage-text p:last-child {
+  margin-bottom: 0;
+}
+
+.passage-text .woc {
+  color: #b9382c;
+  font-weight: 600;
+}
+
 .muted {
-  color: #6f6a5f;
+  color: var(--muted);
 }
 
 .error {
@@ -150,7 +232,7 @@ button:hover {
 
 .attribution {
   font-size: 0.85rem;
-  color: #6f6a5f;
+  color: var(--muted);
   text-align: center;
 }
 
@@ -164,4 +246,12 @@ button:hover {
   .controls {
     width: 320px;
   }
+}
+
+.app-header,
+.passage-card,
+.chapter-list,
+.card,
+.panel {
+  background: #ffffff;
 }

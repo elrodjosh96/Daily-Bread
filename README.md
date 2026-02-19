@@ -36,7 +36,11 @@ Preview the production build:
 
 ## GitHub Pages base path
 
-When deploying to GitHub Pages, set VITE_BASE_PATH to your repository name with leading and trailing slashes (for example, /daily-bread/).
+When deploying to GitHub Pages, set VITE_BASE_PATH to your repository name with leading and trailing slashes (for example, /Daily-Bread/). The project includes .env.production for this.
+
+Deploy with:
+
+	npm run deploy
 
 ## Reading plan data
 

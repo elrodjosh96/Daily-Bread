@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import PassageCard from './components/PassageCard'
-import { getPlanById, getReadingForDay, readingPlans } from './data/readingPlan'
-import { fetchPassage } from './services/esvApi'
+import {
+  expandReferences,
+  getPlanById,
+  getReadingForDay,
+  readingPlans,
+} from './data/readingPlan'
+import { fetchPassages } from './services/esvApi'
 
 const STORAGE_KEYS = {
   startDate: 'dailyBread.startDate',
@@ -50,6 +55,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [chapterIndex, setChapterIndex] = useState(0)
 
   const selectedPlan = useMemo(() => getPlanById(planId), [planId])
   const planLength = selectedPlan?.totalDays || selectedPlan?.readings?.length || 0
@@ -86,6 +92,23 @@ function App() {
     localStorage.setItem(STORAGE_KEYS.planId, planId)
   }, [planId])
 
+  const chapterReferences = useMemo(
+    () => expandReferences(currentReading?.references ?? []),
+    [currentReading],
+  )
+
+  const currentChapter = passages[chapterIndex]
+
+  const chapterRangeLabel = useMemo(() => {
+    if (!chapterReferences.length) return ''
+    if (chapterReferences.length === 1) return chapterReferences[0]
+    return `${chapterReferences[0]} – ${chapterReferences[chapterReferences.length - 1]}`
+  }, [chapterReferences])
+
+  useEffect(() => {
+    setChapterIndex(0)
+  }, [currentDayNumber, planId, startDate])
+
   useEffect(() => {
     if (!selectedPlan || planLength === 0) return
     if (!currentReading) {
@@ -106,15 +129,11 @@ function App() {
       setError('')
 
       try {
-        const results = await Promise.all(
-          currentReading.references.map(async (reference) => ({
-            reference,
-            text: await fetchPassage(reference),
-          })),
-        )
+        const results = await fetchPassages(chapterReferences)
 
         if (isActive) {
           setPassages(results)
+          setChapterIndex(0)
         }
       } catch (err) {
         if (isActive) {
@@ -133,7 +152,7 @@ function App() {
     return () => {
       isActive = false
     }
-  }, [currentDayNumber, currentReading, planLength, selectedPlan])
+  }, [chapterReferences, currentDayNumber, currentReading, planLength, selectedPlan])
 
   const isCompleted = currentDayNumber ? completedDays.includes(currentDayNumber) : false
 
@@ -152,12 +171,20 @@ function App() {
     })
   }
 
+  const goToPreviousChapter = () => {
+    setChapterIndex((prev) => Math.max(0, prev - 1))
+  }
+
+  const goToNextChapter = () => {
+    setChapterIndex((prev) => Math.min(passages.length - 1, prev + 1))
+  }
+
   return (
     <div className="app">
       <header className="app-header">
         <div>
           <p className="eyebrow">Daily Bread</p>
-          <h1>ESV Reading Dashboard</h1>
+          <h1>Reading Dashboard</h1>
           <p className="muted">
             Choose a plan and start date to generate today&apos;s reading.
           </p>
@@ -165,13 +192,10 @@ function App() {
         <div className="controls">
           <label className="field">
             <span>Reading plan</span>
-            <select
-              value={planId}
-              onChange={(event) => setPlanId(event.target.value)}
-            >
+            <select value={planId} onChange={(event) => setPlanId(event.target.value)}>
               {readingPlans.map((plan) => (
                 <option key={plan.id} value={plan.id}>
-                  {plan.label}
+                  {plan.label}{plan.isPlaceholder ? ' (coming soon)' : ''}
                 </option>
               ))}
             </select>
@@ -200,21 +224,61 @@ function App() {
       </header>
 
       <section className="passages">
+        {chapterRangeLabel && (
+          <p className="muted">Today&apos;s chapters: {chapterRangeLabel}</p>
+        )}
         {error && <p className="error">{error}</p>}
         {notice && !error && <p className="muted">{notice}</p>}
         {!error && isLoading && passages.length === 0 && (
           <p className="muted">Loading passage...</p>
         )}
-        {!error && currentReading ? (
-          passages.map((passage) => (
+        {!error && currentReading && currentChapter ? (
+          <div className="chapter-view">
+            <div className="chapter-controls">
+              <button
+                type="button"
+                onClick={goToPreviousChapter}
+                disabled={chapterIndex === 0}
+              >
+                Previous chapter
+              </button>
+              <span className="muted">
+                Chapter {chapterIndex + 1} of {passages.length}
+              </span>
+              <button
+                type="button"
+                onClick={goToNextChapter}
+                disabled={chapterIndex >= passages.length - 1}
+              >
+                Next chapter
+              </button>
+            </div>
             <PassageCard
-              key={passage.reference}
-              reference={passage.reference}
-              text={passage.text}
+              reference={currentChapter.reference}
+              html={currentChapter.html}
               isLoading={isLoading}
               error={error}
             />
-          ))
+            <div className="chapter-controls">
+              <button
+                type="button"
+                onClick={goToPreviousChapter}
+                disabled={chapterIndex === 0}
+              >
+                Previous chapter
+              </button>
+              <span className="muted">
+                Chapter {chapterIndex + 1} of {passages.length}
+              </span>
+              <button
+                type="button"
+                onClick={goToNextChapter}
+                disabled={chapterIndex >= passages.length - 1}
+              >
+                Next chapter
+              </button>
+            </div>
+          </div>
         ) : (
           !error && <p className="muted">Add readings to start your plan.</p>
         )}

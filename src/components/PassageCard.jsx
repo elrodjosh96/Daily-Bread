@@ -1,4 +1,4 @@
-export default function PassageCard({ reference, text, isLoading, error }) {
+export default function PassageCard({ reference, html, isLoading, error }) {
   return (
     <article className="passage-card">
       <header>
@@ -6,7 +6,12 @@ export default function PassageCard({ reference, text, isLoading, error }) {
       </header>
       {isLoading && <p className="muted">Loading passage...</p>}
       {error && <p className="error">{error}</p>}
-      {!isLoading && !error && <pre className="passage-text">{text}</pre>}
+      {!isLoading && !error && (
+        <div
+          className="passage-text"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
     </article>
   )
 }

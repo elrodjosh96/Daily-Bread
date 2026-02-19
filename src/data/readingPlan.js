@@ -1,3 +1,145 @@
+const bibleBooks = [
+  { name: 'Genesis', chapters: 50 },
+  { name: 'Exodus', chapters: 40 },
+  { name: 'Leviticus', chapters: 27 },
+  { name: 'Numbers', chapters: 36 },
+  { name: 'Deuteronomy', chapters: 34 },
+  { name: 'Joshua', chapters: 24 },
+  { name: 'Judges', chapters: 21 },
+  { name: 'Ruth', chapters: 4 },
+  { name: '1 Samuel', chapters: 31 },
+  { name: '2 Samuel', chapters: 24 },
+  { name: '1 Kings', chapters: 22 },
+  { name: '2 Kings', chapters: 25 },
+  { name: '1 Chronicles', chapters: 29 },
+  { name: '2 Chronicles', chapters: 36 },
+  { name: 'Ezra', chapters: 10 },
+  { name: 'Nehemiah', chapters: 13 },
+  { name: 'Esther', chapters: 10 },
+  { name: 'Job', chapters: 42 },
+  { name: 'Psalms', chapters: 150 },
+  { name: 'Proverbs', chapters: 31 },
+  { name: 'Ecclesiastes', chapters: 12 },
+  { name: 'Song of Solomon', chapters: 8 },
+  { name: 'Isaiah', chapters: 66 },
+  { name: 'Jeremiah', chapters: 52 },
+  { name: 'Lamentations', chapters: 5 },
+  { name: 'Ezekiel', chapters: 48 },
+  { name: 'Daniel', chapters: 12 },
+  { name: 'Hosea', chapters: 14 },
+  { name: 'Joel', chapters: 3 },
+  { name: 'Amos', chapters: 9 },
+  { name: 'Obadiah', chapters: 1 },
+  { name: 'Jonah', chapters: 4 },
+  { name: 'Micah', chapters: 7 },
+  { name: 'Nahum', chapters: 3 },
+  { name: 'Habakkuk', chapters: 3 },
+  { name: 'Zephaniah', chapters: 3 },
+  { name: 'Haggai', chapters: 2 },
+  { name: 'Zechariah', chapters: 14 },
+  { name: 'Malachi', chapters: 4 },
+  { name: 'Matthew', chapters: 28 },
+  { name: 'Mark', chapters: 16 },
+  { name: 'Luke', chapters: 24 },
+  { name: 'John', chapters: 21 },
+  { name: 'Acts', chapters: 28 },
+  { name: 'Romans', chapters: 16 },
+  { name: '1 Corinthians', chapters: 16 },
+  { name: '2 Corinthians', chapters: 13 },
+  { name: 'Galatians', chapters: 6 },
+  { name: 'Ephesians', chapters: 6 },
+  { name: 'Philippians', chapters: 4 },
+  { name: 'Colossians', chapters: 4 },
+  { name: '1 Thessalonians', chapters: 5 },
+  { name: '2 Thessalonians', chapters: 3 },
+  { name: '1 Timothy', chapters: 6 },
+  { name: '2 Timothy', chapters: 4 },
+  { name: 'Titus', chapters: 3 },
+  { name: 'Philemon', chapters: 1 },
+  { name: 'Hebrews', chapters: 13 },
+  { name: 'James', chapters: 5 },
+  { name: '1 Peter', chapters: 5 },
+  { name: '2 Peter', chapters: 3 },
+  { name: '1 John', chapters: 5 },
+  { name: '2 John', chapters: 1 },
+  { name: '3 John', chapters: 1 },
+  { name: 'Jude', chapters: 1 },
+  { name: 'Revelation', chapters: 22 },
+]
+
+const totalChapters = bibleBooks.reduce((sum, book) => sum + book.chapters, 0)
+const bookChapterMap = Object.fromEntries(
+  bibleBooks.map((book) => [book.name, book.chapters]),
+)
+
+const formatReference = (bookName, start, end) =>
+  start === end ? `${bookName} ${start}` : `${bookName} ${start}-${end}`
+
+const buildWholeBiblePlan = (totalDays) => {
+  const base = Math.floor(totalChapters / totalDays)
+  const extra = totalChapters % totalDays
+  const readings = []
+
+  let bookIndex = 0
+  let chapter = 1
+
+  for (let day = 1; day <= totalDays; day += 1) {
+    let chaptersForDay = base + (day <= extra ? 1 : 0)
+    const references = []
+
+    while (chaptersForDay > 0 && bookIndex < bibleBooks.length) {
+      const book = bibleBooks[bookIndex]
+      const remainingInBook = book.chapters - chapter + 1
+      const take = Math.min(chaptersForDay, remainingInBook)
+      const start = chapter
+      const end = chapter + take - 1
+
+      references.push(formatReference(book.name, start, end))
+
+      chaptersForDay -= take
+      chapter = end + 1
+
+      if (chapter > book.chapters) {
+        bookIndex += 1
+        chapter = 1
+      }
+    }
+
+    readings.push({ day, references })
+  }
+
+  return readings
+}
+
+export const expandReferences = (references) => {
+  const expanded = []
+
+  references.forEach((reference) => {
+    const match = reference.match(/^(.+?)\s+(\d+)(?:-(\d+))?$/)
+    if (!match) {
+      expanded.push(reference)
+      return
+    }
+
+    const bookName = match[1]
+    const start = Number(match[2])
+    const end = Number(match[3] || match[2])
+    const maxChapters = bookChapterMap[bookName]
+
+    if (!maxChapters || Number.isNaN(start) || Number.isNaN(end)) {
+      expanded.push(reference)
+      return
+    }
+
+    const last = Math.min(end, maxChapters)
+    for (let chapter = start; chapter <= last; chapter += 1) {
+      expanded.push(`${bookName} ${chapter}`)
+    }
+  })
+
+  return expanded
+}
+
 export const readingPlans = [
   {
     id: '30-ot',
@@ -105,16 +247,14 @@ export const readingPlans = [
     label: '90-Day Whole Bible',
     description: 'Read the whole Bible in 90 days.',
     totalDays: 90,
-    readings: [],
-    isPlaceholder: true,
+    readings: buildWholeBiblePlan(90),
   },
   {
     id: '365-bible',
     label: '1-Year Whole Bible',
     description: 'Read the whole Bible in a year.',
     totalDays: 365,
-    readings: [],
-    isPlaceholder: true,
+    readings: buildWholeBiblePlan(365),
   },
 ]
 
